@@ -1,5 +1,6 @@
 import React, { useState, FC, useReducer, useContext } from "react";
 import { CloseOutlined } from "@ant-design/icons";
+import "./label.less";
 
 interface IState {
   nameArray: Array<string>; // 标签名字
@@ -47,7 +48,9 @@ const Button = (props: ButtonProps) => {
   const index = props.index;
   return (
     <span onMouseOver={() => setHover(true)} onMouseOut={() => setHover(false)}>
-      <button style={{ backgroundColor: color }}>{name}</button>
+      <button className="border" style={{ backgroundColor: color }}>
+        {name}
+      </button>
       <button
         style={{ display: isHover ? "inline" : "none" }}
         onClick={() => {
