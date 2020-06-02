@@ -34,10 +34,17 @@ export default () => {
   const [length, setLength] = useState(0);
   const [name, setName] = useState("");
   const [change, setChange] = useState(false);
+  const [state, setState] = useState(0); // 0搜索   1编辑
+  const [index, setIndex] = useState(-1);
 
   const deleteFC = (index: number): void => {
     labelArray.splice(index, 1);
     setLength((pre) => pre - 1);
+  };
+
+  const toEdit = (index: number) => {
+    setState(1);
+    setIndex(index);
   };
 
   return (
@@ -56,28 +63,38 @@ export default () => {
           );
         })}
       </div>
-      <input
-        type="text"
-        value={name}
-        onChange={(e) => {
-          setName(e.target.value);
-          setChange(true);
-        }}
-        placeholder="搜索标签"
-      />
-      <button
-        onClick={() => {
-          if (change) {
-            labelArray.push(name);
-            setName("");
-            setChange(false);
-            setLength((pre) => pre + 1);
-          }
-        }}
-      >
-        添加
-      </button>
-      {length}
+      <div>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => {
+            setName(e.target.value);
+            setChange(true);
+          }}
+          placeholder="搜索标签"
+        />
+        <button
+          onClick={() => {
+            if (change) {
+              labelArray.push(name);
+              setName("");
+              setChange(false);
+              setLength((pre) => pre + 1);
+            }
+          }}
+        >
+          添加
+        </button>
+        {length}
+        <ul style={{ display: state === 0 ? "inline" : "none" }}>
+          {labelArray.map((item, index) => {
+            return <li onClick={() => toEdit(index)}>{item}</li>;
+          })}
+        </ul>
+        <div style={{ display: state === 1 ? "inline" : "none" }}>
+          展示{labelArray[index]}
+        </div>
+      </div>
     </div>
   );
 };
