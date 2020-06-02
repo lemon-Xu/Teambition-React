@@ -1,5 +1,37 @@
-import React, { useState, FC } from "react";
+import React, { useState, FC, useReducer, useContext } from "react";
 import { CloseOutlined } from "@ant-design/icons";
+
+interface IState {
+  nameArray: Array<string>; // 标签名字
+  colorArray: Array<string>; // 标签颜色
+}
+
+interface IAction {
+  type: IActionType;
+}
+
+interface IActionType {}
+
+const LABEL_ADD: IActionType = "LABEL_ADD";
+const LABEL_DELETE: IActionType = "LABEL_DELETE";
+const LABEL_ALTER: IActionType = "LABEL_ALTER";
+
+const reducer = (state: IState, action: IAction) => {
+  switch (action.type) {
+    case LABEL_ADD:
+      return {
+        ...state,
+      };
+    case LABEL_DELETE:
+      return {
+        ...state,
+      };
+    case LABEL_ALTER:
+      return {
+        ...state,
+      };
+  }
+};
 
 interface ButtonProps {
   name: string;
