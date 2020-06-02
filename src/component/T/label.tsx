@@ -1,49 +1,61 @@
-import React, { useState } from "react";
+import React, { useState, FC } from "react";
 import { CloseOutlined } from "@ant-design/icons";
 
 interface ButtonProps {
   name: string;
+  color: string;
+  index: number;
+  deleteFC(index: number): void;
 }
 const Button = (props: ButtonProps) => {
   const [isHover, setHover] = useState(false);
+  const color = props.color;
+  const deleteFC = props.deleteFC;
+  const name = props.name;
+  const index = props.index;
   return (
-    <div>
+    <span onMouseOver={() => setHover(true)} onMouseOut={() => setHover(false)}>
+      <button style={{ backgroundColor: color }}>{name}</button>
       <button
-        onMouseOver={() => setHover(true)}
-        onMouseOut={() => setHover(false)}
+        style={{ display: isHover ? "inline" : "none" }}
+        onClick={() => {
+          deleteFC(index);
+        }}
       >
-        {props.name}
-      </button>
-      <button style={{ display: isHover ? "none" : "inlint" }}>
         <CloseOutlined />
       </button>
-    </div>
+      {index}
+    </span>
   );
 };
 
 export default () => {
   const [labelArray, setLabelArray] = useState(new Array<string>());
+  const [length, setLength] = useState(0);
   const [name, setName] = useState("");
   const [change, setChange] = useState(false);
+
+  const deleteFC = (index: number): void => {
+    labelArray.splice(index, 1);
+    setLength((pre) => pre - 1);
+  };
+
   return (
     <div>
       <p>12312</p>
-      <a>添加标签2</a>
-      {labelArray.map((item) => {
-        return <Button name={item}></Button>;
-      })}
-      <button
-        onClick={() => {
-          if (change) {
-            labelArray.push(name);
-            alert(labelArray);
-            setName("");
-            setChange(false);
-          }
-        }}
-      >
-        添加
-      </button>
+      <p>添加标签2</p>
+      <div>
+        {labelArray.map((item, index) => {
+          return (
+            <Button
+              name={item}
+              color={"#00ff00"}
+              index={index}
+              deleteFC={deleteFC}
+            ></Button>
+          );
+        })}
+      </div>
       <input
         type="text"
         value={name}
@@ -51,7 +63,21 @@ export default () => {
           setName(e.target.value);
           setChange(true);
         }}
+        placeholder="搜索标签"
       />
+      <button
+        onClick={() => {
+          if (change) {
+            labelArray.push(name);
+            setName("");
+            setChange(false);
+            setLength((pre) => pre + 1);
+          }
+        }}
+      >
+        添加
+      </button>
+      {length}
     </div>
   );
 };
