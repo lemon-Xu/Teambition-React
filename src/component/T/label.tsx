@@ -65,32 +65,34 @@ const Button = (props: ButtonProps) => {
   );
 };
 
-interface label {
+interface Label {
   color: string;
   name: string;
   inUse: boolean;
 }
 
 export default () => {
-  const [labels, setLabels] = useState(new Array<label>());
+  const [labels, setLabels] = useState(new Array<Label>());
   const [nameArray, setNameArray] = useState(new Array<string>()); // 标签名字
-  const [colorArray, setColorArray] = useState(new Array<number>()); // 标签颜色（备选颜色下标）
+
   const optionalColor = [
-    "63,165,238",
-    "119,198,62",
-    "42,190,176",
-    "119,124,202",
-    "253,173,52",
-    "254,77,61",
+    "rgb(63,165,238)",
+    "rgb(119,198,62)",
+    "rgb(42,190,176)",
+    "rgb(119,124,202)",
+    "rgb(253,173,52)",
+    "rgb(254,77,61)",
   ]; // 备选颜色
   const [length, setLength] = useState(0);
+  const [color, setColor] = useState("rgb(63,165,238)");
   const [name, setName] = useState("");
   const [textChange, setTextChange] = useState(false); // 文本改变
   const [state, setState] = useState(0); // 0搜索   1编辑
-  const [index, setIndex] = useState(-1);
+  const [index, setIndex] = useState(-1); // 当前选择的标签下标
+  const [version, setVersion] = useState(0);
 
-  const deleteFC = (index: number): void => {
-    nameArray.splice(index, 1);
+  const labelDeleteEvent = (index: number): void => {
+    labels.splice(index, 1);
     setLength((pre) => pre - 1);
   };
 
@@ -99,17 +101,29 @@ export default () => {
     setIndex(index);
   };
 
+  const labelAddEvent = () => {
+    let label = {
+      color: color,
+      name: name,
+      inUse: true,
+    };
+    labels.push(label);
+    setVersion((pre) => pre + 1);
+    setName("");
+    setState(0);
+    setTextChange(false);
+  };
+
   return (
     <div>
-      <p>12312</p>
       <p>添加标签2</p>
       <div>
-        {nameArray.map((item, index) => {
-          let props = {
-            name: item,
-            color: "rgb(".concat("63,165,238").concat(")"),
+        {labels.map((item, index) => {
+          let props: ButtonProps = {
+            name: item.name,
+            color: item.color,
             index: index,
-            deleteFC: deleteFC,
+            deleteFC: labelDeleteEvent,
           };
           return <Button {...props}></Button>;
         })}
@@ -124,27 +138,46 @@ export default () => {
           }}
           placeholder="搜索标签"
         />
-        <button
-          onClick={() => {
-            if (textChange) {
-              nameArray.push(name);
-              setName("");
-              setTextChange(false);
-              setLength((pre) => pre + 1);
-            }
-          }}
-        >
-          添加
-        </button>
       </div>
       // 颜色选择器
-      <div></div>
+      <div>
+        <div>
+          <button>返回</button>
+          <span>编辑标签</span>
+          <button>关闭</button>
+        </div>
+        <div>
+          {optionalColor.map((item) => {
+            return (
+              <span>
+                <button
+                  style={{ backgroundColor: item }}
+                  onClick={() => setColor(item)}
+                >
+                  1
+                </button>
+              </span>
+            );
+          })}
+        </div>
+        <div>
+          <button
+            onClick={() => {
+              labelDeleteEvent(index);
+              setState(0);
+            }}
+          >
+            删除
+          </button>
+          <button onClick={() => labelAddEvent()}>完成</button>
+        </div>
+      </div>
       // 历史标签选择器
       <div>
         {length}
         <ul style={{ display: state === 0 ? "inline" : "none" }}>
-          {nameArray.map((item, index) => {
-            return <li onClick={() => toEdit(index)}>{item}</li>;
+          {labels.map((item, index) => {
+            return <li onClick={() => toEdit(index)}>{item.name}</li>;
           })}
         </ul>
         <div style={{ display: state === 1 ? "inline" : "none" }}>
