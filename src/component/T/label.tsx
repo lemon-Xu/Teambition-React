@@ -50,6 +50,7 @@ const Button = (props: ButtonProps) => {
     <span onMouseOver={() => setHover(true)} onMouseOut={() => setHover(false)}>
       <button className="border" style={{ backgroundColor: color }}>
         {name}
+        {color}
       </button>
       <button
         style={{ display: isHover ? "inline" : "none" }}
@@ -64,16 +65,32 @@ const Button = (props: ButtonProps) => {
   );
 };
 
+interface label {
+  color: string;
+  name: string;
+  inUse: boolean;
+}
+
 export default () => {
-  const [labelArray, setLabelArray] = useState(new Array<string>());
+  const [labels, setLabels] = useState(new Array<label>());
+  const [nameArray, setNameArray] = useState(new Array<string>()); // 标签名字
+  const [colorArray, setColorArray] = useState(new Array<number>()); // 标签颜色（备选颜色下标）
+  const optionalColor = [
+    "63,165,238",
+    "119,198,62",
+    "42,190,176",
+    "119,124,202",
+    "253,173,52",
+    "254,77,61",
+  ]; // 备选颜色
   const [length, setLength] = useState(0);
   const [name, setName] = useState("");
-  const [change, setChange] = useState(false);
+  const [textChange, setTextChange] = useState(false); // 文本改变
   const [state, setState] = useState(0); // 0搜索   1编辑
   const [index, setIndex] = useState(-1);
 
   const deleteFC = (index: number): void => {
-    labelArray.splice(index, 1);
+    nameArray.splice(index, 1);
     setLength((pre) => pre - 1);
   };
 
@@ -87,15 +104,14 @@ export default () => {
       <p>12312</p>
       <p>添加标签2</p>
       <div>
-        {labelArray.map((item, index) => {
-          return (
-            <Button
-              name={item}
-              color={"#00ff00"}
-              index={index}
-              deleteFC={deleteFC}
-            ></Button>
-          );
+        {nameArray.map((item, index) => {
+          let props = {
+            name: item,
+            color: "rgb(".concat("63,165,238").concat(")"),
+            index: index,
+            deleteFC: deleteFC,
+          };
+          return <Button {...props}></Button>;
         })}
       </div>
       <div>
@@ -104,30 +120,35 @@ export default () => {
           value={name}
           onChange={(e) => {
             setName(e.target.value);
-            setChange(true);
+            setTextChange(true);
           }}
           placeholder="搜索标签"
         />
         <button
           onClick={() => {
-            if (change) {
-              labelArray.push(name);
+            if (textChange) {
+              nameArray.push(name);
               setName("");
-              setChange(false);
+              setTextChange(false);
               setLength((pre) => pre + 1);
             }
           }}
         >
           添加
         </button>
+      </div>
+      // 颜色选择器
+      <div></div>
+      // 历史标签选择器
+      <div>
         {length}
         <ul style={{ display: state === 0 ? "inline" : "none" }}>
-          {labelArray.map((item, index) => {
+          {nameArray.map((item, index) => {
             return <li onClick={() => toEdit(index)}>{item}</li>;
           })}
         </ul>
         <div style={{ display: state === 1 ? "inline" : "none" }}>
-          展示{labelArray[index]}
+          展示{nameArray[index]}
         </div>
       </div>
     </div>
