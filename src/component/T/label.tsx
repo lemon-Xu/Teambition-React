@@ -71,6 +71,55 @@ interface Label {
   inUse: boolean;
 }
 
+interface IPEditLabel {
+  label: Label;
+  index: number;
+  optionalColor: Array<string>;
+  goBackFC: () => void;
+  alterLabel: (color: string) => void;
+}
+
+const EditLabel = (props: IPEditLabel) => {
+  const [name, setName] = useState(props.label.name);
+  const [color, setColor] = useState(props.label.color);
+  return (
+    <div>
+      <div>
+        <span onClick={() => props.goBackFC()}>返回</span>
+        <span>编辑标签</span>
+        <span>关闭</span>
+      </div>
+      <input value={name} type="text" />
+      <div>
+        {props.optionalColor.map((item) => {
+          return (
+            <span>
+              <button
+                style={{ backgroundColor: item }}
+                onClick={() => {
+                  setColor(item);
+                }}
+              >
+                {color === item ? "选中" : "备选"}
+              </button>
+            </span>
+          );
+        })}
+      </div>
+      <div>
+        <button>删除</button>
+        <button
+          onClick={() => {
+            props.alterLabel(color);
+          }}
+        >
+          完成
+        </button>
+      </div>
+    </div>
+  );
+};
+
 export default () => {
   const [labels, setLabels] = useState(new Array<Label>());
   const [nameArray, setNameArray] = useState(new Array<string>()); // 标签名字
@@ -114,6 +163,29 @@ export default () => {
     setTextChange(false);
   };
 
+  const editProps = {
+    label: labels[index],
+    index: index,
+    optionalColor: optionalColor,
+    goBackFC: () => {
+      setState(0);
+      setIndex(-1);
+    },
+    alterLabel: (color: string) => {
+      labels[index].color = color;
+      setVersion((pre) => pre + 1);
+    },
+  };
+
+  let b = <div>2</div>;
+  switch (state) {
+    case 0:
+      break;
+    case 1:
+      b = <EditLabel {...editProps}></EditLabel>;
+      break;
+  }
+
   return (
     <div>
       <p>添加标签2</p>
@@ -141,11 +213,7 @@ export default () => {
       </div>
       // 颜色选择器
       <div>
-        <div>
-          <button>返回</button>
-          <span>编辑标签</span>
-          <button>关闭</button>
-        </div>
+        <div>{b}</div>
         <div>
           {optionalColor.map((item) => {
             return (
