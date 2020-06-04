@@ -166,6 +166,7 @@ export default () => {
       name: name,
       inUse: true,
     };
+    if (!textChange) return;
     labels.push(label);
     setVersion((pre) => pre + 1);
     setName("");
@@ -239,14 +240,6 @@ export default () => {
           })}
         </div>
         <div>
-          <button
-            onClick={() => {
-              labelDeleteEvent(index);
-              setState(0);
-            }}
-          >
-            删除
-          </button>
           <button onClick={() => labelAddEvent()}>完成</button>
         </div>
       </div>
