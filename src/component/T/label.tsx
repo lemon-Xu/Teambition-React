@@ -50,7 +50,6 @@ const Button = (props: ButtonProps) => {
     <span onMouseOver={() => setHover(true)} onMouseOut={() => setHover(false)}>
       <button className="border" style={{ backgroundColor: color }}>
         {name}
-        {color}
       </button>
       <button
         style={{ display: isHover ? "inline" : "none" }}
@@ -60,7 +59,6 @@ const Button = (props: ButtonProps) => {
       >
         <CloseOutlined />
       </button>
-      {index}
     </span>
   );
 };
@@ -76,12 +74,17 @@ interface IPEditLabel {
   index: number;
   optionalColor: Array<string>;
   goBackFC: () => void;
-  alterLabel: (color: string) => void;
+  alterLabel: (label: Label) => void;
 }
 
 const EditLabel = (props: IPEditLabel) => {
   const [name, setName] = useState(props.label.name);
   const [color, setColor] = useState(props.label.color);
+  const label: Label = {
+    name: name,
+    color: color,
+    inUse: props.label.inUse,
+  };
   return (
     <div>
       <div>
@@ -89,7 +92,13 @@ const EditLabel = (props: IPEditLabel) => {
         <span>编辑标签</span>
         <span>关闭</span>
       </div>
-      <input value={name} type="text" />
+      <input
+        value={name}
+        type="text"
+        onChange={(e) => {
+          setName(e.target.value);
+        }}
+      />
       <div>
         {props.optionalColor.map((item) => {
           return (
@@ -110,7 +119,8 @@ const EditLabel = (props: IPEditLabel) => {
         <button>删除</button>
         <button
           onClick={() => {
-            props.alterLabel(color);
+            props.alterLabel(label);
+            props.goBackFC();
           }}
         >
           完成
@@ -171,8 +181,8 @@ export default () => {
       setState(0);
       setIndex(-1);
     },
-    alterLabel: (color: string) => {
-      labels[index].color = color;
+    alterLabel: (label: Label) => {
+      labels[index] = label;
       setVersion((pre) => pre + 1);
     },
   };
