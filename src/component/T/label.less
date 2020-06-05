@@ -1,4 +1,63 @@
-@border-radius: 50px;
-.border {
-  border-radius: @border-radius;
+@garden-border-radius-50: 50%;
+@garden-border-radius-5px: 5px;
+
+@margin: 18px;
+
+@button-border-radius: 10px;
+@dangerousbutton-background-color: #ff4d4f;
+@dangerousbutton-color: #ff4d4f;
+@ordinaryButton-background-color: #33a1fa;
+@ordinaryButton-color: white;
+
+@smallButton-width: 24px;
+@smallButton-height: 24px;
+
+@middleButton-width: 100px;
+@middleButton_height: 40px;
+
+.garden {
+  border-radius: 12px;
+  width: 24px;
+  height: 24px;
+  border-style: none;
+  padding: 0px;
+}
+
+.garden:parent {
+  margin: 0;
+  padding: 0;
+}
+
+.garden-border-radius-5px {
+  border-radius: @garden-border-radius-5px;
+}
+
+.button {
+  border-radius: @button-border-radius;
+}
+.smallButton {
+  width: @smallButton-width;
+  height: @smallButton-height;
+}
+
+.middleButton {
+  width: @middleButton-width;
+  height: @middleButton_height;
+}
+
+.dangerousButton {
+  margin: @margin;
+  color: @dangerousbutton-color;
+  background-color: white;
+  border-color: @dangerousbutton-background-color;
+  border-width: 2px;
+  border-style: solid;
+  .garden-border-radius-5px;
+}
+
+.ordinaryButton {
+  background-color: @ordinaryButton-background-color;
+  color: @ordinaryButton-color;
+  .garden-border-radius-5px;
+  border-style: none;
 }

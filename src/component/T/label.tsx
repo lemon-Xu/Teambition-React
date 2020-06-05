@@ -1,5 +1,5 @@
 import React, { useState, FC, useReducer, useContext } from "react";
-import { CloseOutlined } from "@ant-design/icons";
+import Icon, { CloseOutlined, CheckOutlined } from "@ant-design/icons";
 import "./label.less";
 
 interface IState {
@@ -48,7 +48,10 @@ const Button = (props: ButtonProps) => {
   const index = props.index;
   return (
     <span onMouseOver={() => setHover(true)} onMouseOut={() => setHover(false)}>
-      <button className="border" style={{ backgroundColor: color }}>
+      <button
+        className="gardeb-birder-radius-25"
+        style={{ backgroundColor: color }}
+      >
         {name}
       </button>
       <button
@@ -102,26 +105,26 @@ const EditLabel = (props: IPEditLabel) => {
       <div>
         {props.optionalColor.map((item) => {
           return (
-            <span>
-              <button
-                style={{ backgroundColor: item }}
-                onClick={() => {
-                  setColor(item);
-                }}
-              >
-                {color === item ? "选中" : "备选"}
-              </button>
-            </span>
+            <button
+              style={{ backgroundColor: item }}
+              onClick={() => {
+                setColor(item);
+              }}
+              className="garden"
+            >
+              {color === item ? <CheckOutlined /> : <Icon />}
+            </button>
           );
         })}
       </div>
       <div>
-        <button>删除</button>
+        <button className="middleButton dangerousButton">删除</button>
         <button
           onClick={() => {
             props.alterLabel(label);
             props.goBackFC();
           }}
+          className="middleButton ordinaryButton"
         >
           完成
         </button>
