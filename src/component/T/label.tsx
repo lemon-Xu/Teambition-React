@@ -3,6 +3,7 @@ import Icon, {
   CloseOutlined,
   CheckOutlined,
   LeftOutlined,
+  EditOutlined,
 } from "@ant-design/icons";
 import "./label.less";
 
@@ -38,13 +39,13 @@ const reducer = (state: IState, action: IAction) => {
   }
 };
 
-interface ButtonProps {
+interface LabelProps {
   name: string;
   color: string;
   index: number;
   deleteFC(index: number): void;
 }
-const Button = (props: ButtonProps) => {
+const Label = (props: LabelProps) => {
   const [isHover, setHover] = useState(false);
   const color = props.color;
   const deleteFC = props.deleteFC;
@@ -67,6 +68,51 @@ const Button = (props: ButtonProps) => {
         <CloseOutlined />
       </button>
     </span>
+  );
+};
+
+interface SearchLabelProps {
+  labels: Array<Label>;
+  index: number;
+  toEdit: () => void;
+  delete: (index: number) => void;
+}
+
+const SearchLabel = (props: SearchLabelProps) => {
+  const [labelArray, setLabelArray] = useState(props.labels);
+  const [index, setIndex] = useState(props.index);
+  return (
+    <div className="menuSearch">
+      <input type="text" placeholder="搜索标签" />
+      {labelArray.map((item, i) => {
+        return (
+          <div
+            onMouseOver={() => {
+              setIndex(i);
+            }}
+            onMouseOut={() => {
+              setIndex(-1);
+            }}
+          >
+            <button style={{ backgroundColor: item.color }} className="dot" />
+            <span style={{ color: "black" }}>{item.name}</span>
+
+            <CheckOutlined
+              style={{
+                float: "right",
+                display: item.inUse === true ? "inline" : "none",
+              }}
+            />
+            <EditOutlined
+              style={{
+                float: "right",
+                display: index === i ? "inline" : "none",
+              }}
+            />
+          </div>
+        );
+      })}
+    </div>
   );
 };
 
@@ -198,12 +244,22 @@ export default () => {
     },
   };
 
+  const searchLabel = {
+    labels: labels,
+    index: index,
+    toEdit: () => {
+      setState(0);
+    },
+    delete: labelDeleteEvent,
+  };
+
   let b = <div>2</div>;
   switch (state) {
     case 0:
+      b = <SearchLabel {...searchLabel} />;
       break;
     case 1:
-      b = <EditLabel {...editProps}></EditLabel>;
+      b = <EditLabel {...editProps} />;
       break;
   }
 
@@ -212,13 +268,13 @@ export default () => {
       <p>添加标签2</p>
       <div>
         {labels.map((item, index) => {
-          let props: ButtonProps = {
+          let props: LabelProps = {
             name: item.name,
             color: item.color,
             index: index,
             deleteFC: labelDeleteEvent,
           };
-          return <Button {...props}></Button>;
+          return <Label {...props}></Label>;
         })}
       </div>
       <div>

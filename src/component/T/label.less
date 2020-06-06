@@ -9,6 +9,10 @@
 @ordinaryButton-background-color: #33a1fa;
 @ordinaryButton-color: white;
 
+@dot-width: 18px;
+@dot-height: 18px;
+@dot-border-radius: 9px;
+
 @smallButton-width: 24px;
 @smallButton-height: 24px;
 
@@ -41,6 +45,18 @@
   margin-bottom: @interval;
 }
 
+@menuSearch-width: 250px;
+.menuSearch {
+  width: @menuSearch-width;
+  box-shadow: 2px 2px 9px 2px #999;
+  border: solid 1px;
+}
+.menuSearch > input {
+  width: @menuSearch-width;
+  border-style: none;
+  height: 28px;
+}
+
 .garden {
   border-radius: 12px;
   width: 24px;
@@ -61,6 +77,14 @@
 .button {
   border-radius: @button-border-radius;
 }
+
+.dot {
+  width: @dot-width;
+  height: @dot-height;
+  border-radius: @dot-border-radius;
+  border-style: none;
+}
+
 .smallButton {
   width: @smallButton-width;
   height: @smallButton-height;
