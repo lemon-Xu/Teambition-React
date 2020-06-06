@@ -1,5 +1,9 @@
 import React, { useState, FC, useReducer, useContext } from "react";
-import Icon, { CloseOutlined, CheckOutlined } from "@ant-design/icons";
+import Icon, {
+  CloseOutlined,
+  CheckOutlined,
+  LeftOutlined,
+} from "@ant-design/icons";
 import "./label.less";
 
 interface IState {
@@ -89,11 +93,14 @@ const EditLabel = (props: IPEditLabel) => {
     inUse: props.label.inUse,
   };
   return (
-    <div>
-      <div>
-        <span onClick={() => props.goBackFC()}>返回</span>
-        <span>编辑标签</span>
-        <span>关闭</span>
+    <div className="menu">
+      <div className="menuHeadline">
+        <LeftOutlined
+          style={{ float: "left" }}
+          onClick={() => props.goBackFC()}
+        />
+        编辑标签
+        <CloseOutlined style={{ float: "right" }} />
       </div>
       <input
         value={name}
@@ -233,6 +240,7 @@ export default () => {
             return (
               <span>
                 <button
+                  className="garden"
                   style={{ backgroundColor: item }}
                   onClick={() => setColor(item)}
                 >
