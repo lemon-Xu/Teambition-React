@@ -20,15 +20,16 @@
 @middleButton_height: 40px;
 
 @menu-width: 250px;
+@smallInterval: 6px;
 @interval: 12px;
+@menu-background-color: white;
 .menu {
   box-shadow: 2px 2px 9px 2px #999;
   width: @menu-width;
-  height: 214px;
   border: solid 1px;
   text-align: center;
+  background-color: @menu-background-color;
 }
-
 .menu > div {
   padding: @interval;
 }
@@ -40,6 +41,36 @@
   height: 34px;
   font-size: 12px;
 }
+
+.interval {
+  margin-right: @smallInterval;
+}
+
+.smallInterval-right {
+  margin-right: @smallInterval;
+}
+
+.smallInterval-left {
+  margin-left: @smallInterval;
+}
+
+.menu2 {
+  .menu;
+}
+.menu2 > div {
+  padding: @interval;
+}
+.menu2 > div > * {
+  margin-right: @interval;
+}
+.menuInputText {
+  width: @menu-width;
+  height: 34px;
+  font-size: 12px;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}
 .menuHeadline {
   border-bottom: 1px solid;
   margin-bottom: @interval;
@@ -50,6 +81,7 @@
   width: @menuSearch-width;
   box-shadow: 2px 2px 9px 2px #999;
   border: solid 1px;
+  background-color: @menu-background-color;
 }
 .menuSearch > input {
   width: @menuSearch-width;
@@ -74,6 +106,10 @@
   border-radius: @garden-border-radius-5px;
 }
 
+.border-radius-50px {
+  border-radius: 30px;
+}
+
 .button {
   border-radius: @button-border-radius;
 }
@@ -86,8 +122,8 @@
 }
 
 .smallButton {
-  width: @smallButton-width;
   height: @smallButton-height;
+  padding: 0 10px 0 10px;
 }
 
 .middleButton {
@@ -109,4 +145,13 @@
   color: @ordinaryButton-color;
   .garden-border-radius-5px;
   border-style: none;
+}
+
+.position {
+  position: relative;
+}
+.floatMenu {
+  position: absolute;
+  top: @smallButton-height;
+  z-index: 1;
 }

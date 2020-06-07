@@ -5,6 +5,7 @@ import Icon, {
   LeftOutlined,
   EditOutlined,
   SecurityScanTwoTone,
+  PlusCircleOutlined,
 } from "@ant-design/icons";
 import "./label.less";
 
@@ -55,18 +56,18 @@ const Label = (props: LabelProps) => {
   return (
     <span onMouseOver={() => setHover(true)} onMouseOut={() => setHover(false)}>
       <button
-        className="gardeb-birder-radius-25"
+        className="border-radius-50px smallButton smallInterval-right"
         style={{ backgroundColor: color }}
       >
         {name}
-      </button>
-      <button
-        style={{ display: isHover ? "inline" : "none" }}
-        onClick={() => {
-          deleteFC(index);
-        }}
-      >
-        <CloseOutlined />
+        <span className="smallInterval-left">
+          <CloseOutlined
+            style={{ display: isHover ? "inline" : "none" }}
+            onClick={() => {
+              deleteFC(index);
+            }}
+          />
+        </span>
       </button>
     </span>
   );
@@ -83,7 +84,7 @@ const CreateLabel = (props: CreateLabelProps) => {
   const [name, setName] = useState(props.name);
   const [color, setColor] = useState(props.optionalColor[0]);
   return (
-    <div>
+    <div className="menu2">
       <input
         type="text"
         value={name}
@@ -91,6 +92,7 @@ const CreateLabel = (props: CreateLabelProps) => {
         onChange={(e) => {
           setName(e.target.value);
         }}
+        className="menuInputText"
       />
       <div>
         {props.optionalColor.map((item, index) => {
@@ -106,21 +108,22 @@ const CreateLabel = (props: CreateLabelProps) => {
             </button>
           );
         })}
-        <div>
-          <button
-            onClick={() => {
-              const label = {
-                name: name,
-                color: color,
-                inUse: true,
-              };
-              props.add(label);
-              props.setState(-1);
-            }}
-          >
-            创建
-          </button>
-        </div>
+      </div>
+      <div>
+        <button
+          onClick={() => {
+            const label = {
+              name: name,
+              color: color,
+              inUse: true,
+            };
+            props.add(label);
+            props.setState(-1);
+          }}
+          className="middleButton ordinaryButton"
+        >
+          创建
+        </button>
       </div>
     </div>
   );
@@ -371,34 +374,30 @@ export default () => {
 
   return (
     <div>
-      <p
-        style={{ display: labels.length === 0 ? "inline" : "none" }}
-        onClick={() => {
-          setState(0);
-        }}
-      >
-        添加标签
-      </p>
-      <div>
-        {labels.map((item, index) => {
-          let props: LabelProps = {
-            name: item.name,
-            color: item.color,
-            index: index,
-            deleteFC: labelDeleteEvent,
-          };
-          return <Label {...props}></Label>;
-        })}
+      {labels.map((item, index) => {
+        let props: LabelProps = {
+          name: item.name,
+          color: item.color,
+          index: index,
+          deleteFC: labelDeleteEvent,
+        };
+        return <Label {...props}></Label>;
+      })}
+      <span>
         <span
           onClick={() => {
             setState(0);
           }}
-          style={{ display: labels.length === 0 ? "none" : "inline" }}
+          className="position"
         >
-          添加
+          {labels.length === 0 ? "添加标签" : <PlusCircleOutlined />}
         </span>
+        <span className="floatMenu">{fold}</span>
+      </span>
+
+      <div>
+        123123333333333333333333333333333333333333333333333333333333333333333333333
       </div>
-      {fold}
     </div>
   );
 };
