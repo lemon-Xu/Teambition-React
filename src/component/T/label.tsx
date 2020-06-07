@@ -4,6 +4,7 @@ import Icon, {
   CheckOutlined,
   LeftOutlined,
   EditOutlined,
+  SecurityScanTwoTone,
 } from "@ant-design/icons";
 import "./label.less";
 
@@ -71,19 +72,94 @@ const Label = (props: LabelProps) => {
   );
 };
 
+interface CreateLabelProps {
+  add: (label: Label) => void;
+  name: string;
+  optionalColor: Array<string>;
+  setState: (index: number) => void;
+}
+
+const CreateLabel = (props: CreateLabelProps) => {
+  const [name, setName] = useState(props.name);
+  const [color, setColor] = useState(props.optionalColor[0]);
+  return (
+    <div>
+      <input
+        type="text"
+        value={name}
+        autoFocus={true}
+        onChange={(e) => {
+          setName(e.target.value);
+        }}
+      />
+      <div>
+        {props.optionalColor.map((item, index) => {
+          return (
+            <button
+              style={{ backgroundColor: item }}
+              onClick={() => {
+                setColor(item);
+              }}
+              className="garden"
+            >
+              {item === color ? <CheckOutlined /> : <Icon />}
+            </button>
+          );
+        })}
+        <div>
+          <button
+            onClick={() => {
+              const label = {
+                name: name,
+                color: color,
+                inUse: true,
+              };
+              props.add(label);
+              props.setState(-1);
+            }}
+          >
+            创建
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 interface SearchLabelProps {
   labels: Array<Label>;
   index: number;
   toEdit: () => void;
   delete: (index: number) => void;
+  setSearchName: (name: string) => void;
+  setState: (state: number) => void;
+  setIndex: (index: number) => void;
 }
 
 const SearchLabel = (props: SearchLabelProps) => {
   const [labelArray, setLabelArray] = useState(props.labels);
   const [index, setIndex] = useState(props.index);
+
   return (
     <div className="menuSearch">
-      <input type="text" placeholder="搜索标签" />
+      <input
+        type="text"
+        placeholder="搜索标签"
+        onChange={(e) => {
+          const text = e.target.value;
+          if (labelArray.length === 0) {
+            props.setSearchName(text);
+            props.setState(2);
+          }
+          for (let i in labelArray) {
+            if (text === labelArray[i].name) {
+              break;
+            }
+            props.setSearchName(text);
+            props.setState(2);
+          }
+        }}
+      />
       {labelArray.map((item, i) => {
         return (
           <div
@@ -108,6 +184,10 @@ const SearchLabel = (props: SearchLabelProps) => {
                 float: "right",
                 display: index === i ? "inline" : "none",
               }}
+              onClick={() => {
+                props.setIndex(i);
+                props.setState(1);
+              }}
             />
           </div>
         );
@@ -128,6 +208,8 @@ interface IPEditLabel {
   optionalColor: Array<string>;
   goBackFC: () => void;
   alterLabel: (label: Label) => void;
+  delete: (index: number) => void;
+  setState: (index: number) => void;
 }
 
 const EditLabel = (props: IPEditLabel) => {
@@ -171,11 +253,19 @@ const EditLabel = (props: IPEditLabel) => {
         })}
       </div>
       <div>
-        <button className="middleButton dangerousButton">删除</button>
+        <button
+          className="middleButton dangerousButton"
+          onClick={() => {
+            props.delete(props.index);
+            props.setState(0);
+          }}
+        >
+          删除
+        </button>
         <button
           onClick={() => {
             props.alterLabel(label);
-            props.goBackFC();
+            props.setState(0);
           }}
           className="middleButton ordinaryButton"
         >
@@ -198,17 +288,20 @@ export default () => {
     "rgb(253,173,52)",
     "rgb(254,77,61)",
   ]; // 备选颜色
-  const [length, setLength] = useState(0);
   const [color, setColor] = useState("rgb(63,165,238)");
   const [name, setName] = useState("");
   const [textChange, setTextChange] = useState(false); // 文本改变
-  const [state, setState] = useState(0); // 0搜索   1编辑
+  const [state, setState] = useState(-1); //-1隐藏 0搜索   1编辑 2创建
   const [index, setIndex] = useState(-1); // 当前选择的标签下标
   const [version, setVersion] = useState(0);
+  const [searchName, setSearchName] = useState("");
 
   const labelDeleteEvent = (index: number): void => {
+    // let label = labels[index];
+    // label.inUse = false;
     labels.splice(index, 1);
-    setLength((pre) => pre - 1);
+    // labels.push(label);
+    setVersion((pre) => pre + 1);
   };
 
   const toEdit = (index: number) => {
@@ -216,13 +309,7 @@ export default () => {
     setIndex(index);
   };
 
-  const labelAddEvent = () => {
-    let label = {
-      color: color,
-      name: name,
-      inUse: true,
-    };
-    if (!textChange) return;
+  const labelAddEvent = (label: Label) => {
     labels.push(label);
     setVersion((pre) => pre + 1);
     setName("");
@@ -242,6 +329,8 @@ export default () => {
       labels[index] = label;
       setVersion((pre) => pre + 1);
     },
+    delete: labelDeleteEvent,
+    setState: setState,
   };
 
   const searchLabel = {
@@ -250,22 +339,46 @@ export default () => {
     toEdit: () => {
       setState(0);
     },
+    setSearchName: (name: string) => {
+      setSearchName(name);
+    },
+    setIndex: (index: number) => {
+      setIndex(index);
+    },
     delete: labelDeleteEvent,
+    setState: setState,
   };
 
-  let b = <div>2</div>;
+  const createLabel: CreateLabelProps = {
+    optionalColor: optionalColor,
+    name: searchName,
+    add: labelAddEvent,
+    setState: setState,
+  };
+
+  let fold = <div></div>;
   switch (state) {
     case 0:
-      b = <SearchLabel {...searchLabel} />;
+      fold = <SearchLabel {...searchLabel} />;
       break;
     case 1:
-      b = <EditLabel {...editProps} />;
+      fold = <EditLabel {...editProps} />;
+      break;
+    case 2:
+      fold = <CreateLabel {...createLabel} />;
       break;
   }
 
   return (
     <div>
-      <p>添加标签2</p>
+      <p
+        style={{ display: labels.length === 0 ? "inline" : "none" }}
+        onClick={() => {
+          setState(0);
+        }}
+      >
+        添加标签
+      </p>
       <div>
         {labels.map((item, index) => {
           let props: LabelProps = {
@@ -276,52 +389,16 @@ export default () => {
           };
           return <Label {...props}></Label>;
         })}
-      </div>
-      <div>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => {
-            setName(e.target.value);
-            setTextChange(true);
+        <span
+          onClick={() => {
+            setState(0);
           }}
-          placeholder="搜索标签"
-        />
+          style={{ display: labels.length === 0 ? "none" : "inline" }}
+        >
+          添加
+        </span>
       </div>
-      // 颜色选择器
-      <div>
-        <div>{b}</div>
-        <div>
-          {optionalColor.map((item) => {
-            return (
-              <span>
-                <button
-                  className="garden"
-                  style={{ backgroundColor: item }}
-                  onClick={() => setColor(item)}
-                >
-                  1
-                </button>
-              </span>
-            );
-          })}
-        </div>
-        <div>
-          <button onClick={() => labelAddEvent()}>完成</button>
-        </div>
-      </div>
-      // 历史标签选择器
-      <div>
-        {length}
-        <ul style={{ display: state === 0 ? "inline" : "none" }}>
-          {labels.map((item, index) => {
-            return <li onClick={() => toEdit(index)}>{item.name}</li>;
-          })}
-        </ul>
-        <div style={{ display: state === 1 ? "inline" : "none" }}>
-          展示{nameArray[index]}
-        </div>
-      </div>
+      {fold}
     </div>
   );
 };

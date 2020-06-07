@@ -9,7 +9,6 @@ function App() {
   return (
     <div>
       <Label />
-      <header className="header">123</header>
     </div>
   );
 }
